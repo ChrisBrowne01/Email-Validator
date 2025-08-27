@@ -2,7 +2,7 @@
 /**
  * Project: Email Validator
  * 
- * Description: An email validator tool that checks mulitple email addresses entered by users are valid or not.
+ * Description: An email validator tool that checks mulitple email addresses entered by users are valid or invalid.
  */
 
 /**
