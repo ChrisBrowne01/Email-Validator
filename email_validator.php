@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             placeholder="Enter email addresses..."
           ><?php echo htmlspecialchars($_POST['emails'] ?? ''); ?></textarea>
         </div>
-        
+
         <!-- A checkbox for the user to enable or disable the strict mode -->
         <div>
           <div class="flex flex-wrap space-x-4 mt-1">
@@ -170,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- example emails:
 adam@live.co.uk
-berty.browne@live.co.uk
+berty..browne@live.co.uk
 Christina Clarke@live.co.uk
 Dee23.Doe@live.co.uk
 Erin,Elise@live.co.uk
