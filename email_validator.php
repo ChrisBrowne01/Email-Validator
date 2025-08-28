@@ -2,16 +2,17 @@
 /**
  * Project: Email Validator
  * 
- * Description: An email validator tool that checks mulitple email addresses entered by users are valid or invalid.
- *  and highlights invalid email addresses with explainations for why they are invalid. 
- * Provides a "strict mode" option that enforces additional rules (e.g., no consecutive dots in the username).
+ * Description: An email validator tool that checks mulitple email addresses entered by users are valid and 
+ * highlights invalid email addresses with explainations for why they are invalid. Provides a "strict mode" 
+ * option that enforces additional rules (e.g., no consecutive dots in the username).
  */
 
 /**
  * Validates an email address using a regular expression.
  * @param string $email The email address to validate.
- */
-function validateEmail($email) {
+ * @param bool $strictMode Whether to apply strict validation rules.
+*/
+function validateEmail($email, $strictMode = false) {
   // Trim whitespace to ensure clean validation
   $email = trim($email);
   
@@ -27,6 +28,11 @@ function validateEmail($email) {
   // Using a more specific regex for the username
   if (!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
     return 'Invalid username format. It can only contain alphanumeric characters, dots, underscores, and hyphens.';
+  }
+
+  // Strict mode check for consecutive dots in the username
+  if ($strictMode && strpos($username, '..') !== false) {
+    return 'Strict Mode: Consecutive dots are not allowed in the username.';
   }
 
   // Validate the domain name
@@ -48,10 +54,12 @@ function validateEmail($email) {
 // Declar array to store valid and invalid emails
 $validEmails = [];
 $invalidEmails = [];
+$strictMode = false;
 
 // Check if the form was submitted via POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $emailList = $_POST['emails'] ?? '';
+  $strictMode = isset($_POST['strictMode']);
   
   // Split the email list into an array of emails
   $emails = explode("\n", $emailList);
@@ -60,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($email);
     // Check if the email is empty
     if (!empty($email)) {
-      $validationResult = validateEmail($email);
+      $validationResult = validateEmail($email, $strictMode);
       // Sort emails into vaild and invalid arrays
       if ($validationResult === true) {
         $validEmails[] = $email;
@@ -97,6 +105,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" 
             placeholder="Enter email addresses..."
           ><?php echo htmlspecialchars($_POST['emails'] ?? ''); ?></textarea>
+        </div>
+        
+        <!-- A checkbox for the user to enable or disable the strict mode -->
+        <div>
+          <div class="flex flex-wrap space-x-4 mt-1">
+            <label class="inline-flex items-center">
+              <input type="checkbox" name="strictMode" <?php echo $strictMode ? 'checked' : ''; ?> class="rounded text-indigo-600 focus:ring-indigo-500">
+              <span class="ml-2 text-sm text-gray-700"> Strict Mode</span>
+            </label>
+          </div>
         </div>
 
         <!-- Button to submit to validate emails -->
